@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // Dummy authentication
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Login to manage your notes"),
                   const SizedBox(height: 24),
 
-                  // Email
+
                   TextField(
                     controller: _emailController,
                     decoration: const InputDecoration(
@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Password
+
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Login Button
+
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
