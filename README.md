@@ -7,12 +7,18 @@
 ## 📸 App Preview
 
 
-| <img src="https://github.com/user-attachments/assets/dacb2c16-2755-4f69-a4c5-910a96200e46" width="150"> | 
-<img src="" width="150"> |
-<img src="" width="150"> | 
-<img src="" width="150"> |
+| <img src="https://github.com/user-attachments/assets/876a8d45-c712-4da3-abfc-3f22536fa4f5" width="150"> | 
+<img src="https://github.com/user-attachments/assets/27e9977f-148c-4127-8e62-048b8b4e317b" width="150"> |
+<img src="https://github.com/user-attachments/assets/d6a5ae9b-0ed1-41bd-8bb7-f16aa7514583" width="150"> | 
+<img src="https://github.com/user-attachments/assets/8ca39dc7-f032-4906-bac1-9138e729abca" width="150"> |
+<img src="https://github.com/user-attachments/assets/20dce2c3-965c-4b15-be89-3d7fa57934e5" width="150"> |
+<img src="https://github.com/user-attachments/assets/31cf33f2-85a2-46c2-bca5-b36149d869b4" width="150"> |
+
 
 ---
+
+
+
 
 
 
@@ -71,7 +77,7 @@ Follow these steps to run **NoteTrack** locally:
 📦 **APK Download**  
 You can manually install and test the app by downloading the ready-to-use APK from the [Releases](https://github.com/sanalrajesh/notetrack/releases) section.  
 
-👉 [Download NoteTrack APK (v1.0.0)](https://github.com/sanalrajesh/notetrack/releases/download/v1.0.0/app-arm64-v8a-release.apk)
+👉 [Download NoteTrack APK (v1.0.0)](https://github.com/sanalrajesh/notetrack/releases/download/v1.0.1/app-arm64-v8a-release.apk)
 
 
 🌟 Future Enhancements
