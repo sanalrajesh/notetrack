@@ -4,6 +4,7 @@ part 'note_model.g.dart';
 
 @HiveType(typeId: 0)
 class Note extends HiveObject {
+
   @HiveField(0)
   String title;
 
@@ -20,6 +21,6 @@ class Note extends HiveObject {
     required this.title,
     required this.description,
     required this.subject,
-    required this.createdAt,
-  });
+    DateTime? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now(); 
 }
