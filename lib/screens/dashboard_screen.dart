@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notetrack/screens/login_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/note_provider.dart';
 import '../providers/theme_provider.dart'; 
@@ -21,97 +22,126 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  void _showProfileMenu(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text("Profile"),
+              onTap: () {
+                Navigator.pop(context); 
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.dark_mode),
+              title: const Text("Theme Mode"),
+              onTap: () {
+                themeProvider.toggleTheme();
+                Navigator.pop(context); 
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
+              onTap: () {
+                Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>LoginScreen()) 
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
-    final noteProvider = Provider.of<NoteProvider>(context);
+Widget build(BuildContext context) {
+  final noteProvider = Provider.of<NoteProvider>(context);
+  final themeProvider = Provider.of<ThemeProvider>(context);
+  final isDark = themeProvider.isDarkMode;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Dashboard"),
-        actions: [
-
-          PopupMenuButton<String>(
-            icon: const CircleAvatar(
+  return Scaffold(
+    backgroundColor: isDark ? Colors.black : Colors.white, // entire background changes
+    appBar: AppBar(
+      backgroundColor: isDark ? const Color.fromARGB(255, 0, 0, 0) : const Color.fromARGB(255, 254, 255, 255),
+      title: const Text("Dashboard"),
+      actions: [
+        GestureDetector(
+          onTap: () => _showProfileMenu(context),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(
                 Icons.person,
                 color: Colors.indigo,
               ),
             ),
-            onSelected: (value) {
-              final themeProvider =
-                  Provider.of<ThemeProvider>(context, listen: false);
-              if (value == 'profile') {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Profile clicked")),
-                );
-              } else if (value == 'theme') {
-                themeProvider.toggleTheme(); 
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'profile',
-                child: Text('Profile'),
-              ),
-              const PopupMenuItem(
-                value: 'theme',
-                child: Text('Theme Mode'),
-              ),
-            ],
           ),
-        ],
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddEditNoteScreen(),
+        ),
+      ],
+    ),
+    floatingActionButton: FloatingActionButton(
+      backgroundColor: isDark ? const Color.fromARGB(255, 242, 243, 242) : const Color.fromARGB(255, 247, 248, 248),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AddEditNoteScreen(),
+          ),
+        );
+      },
+      child: const Icon(Icons.add,color: Colors.black,),
+    ),
+    body: noteProvider.notes.isEmpty
+        ? Center(
+            child: Text(
+              "No Notes Yet",
+              style: TextStyle(
+                fontSize: 16,
+                color: isDark ? Colors.white : Colors.black,
+              ),
             ),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
-
-      body: noteProvider.notes.isEmpty
-          ? const Center(
-              child: Text(
-                "No Notes Yet",
-                style: TextStyle(fontSize: 16),
-              ),
-            )
-          : GridView.builder(
-              padding: const EdgeInsets.all(12),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, 
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.85,
-              ),
-              itemCount: noteProvider.notes.length,
-              itemBuilder: (context, index) {
-                final note = noteProvider.notes[index];
-                return NoteCard(
-                  note: note,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddEditNoteScreen(
-                          index: index,
-                          existingNote: note,
-                        ),
+          )
+        : GridView.builder(
+            padding: const EdgeInsets.all(12),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.85,
+            ),
+            itemCount: noteProvider.notes.length,
+            itemBuilder: (context, index) {
+              final note = noteProvider.notes[index];
+              return NoteCard(
+                note: note,
+                isDarkMode: isDark, // pass the theme to NoteCard
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddEditNoteScreen(
+                        index: index,
+                        existingNote: note,
                       ),
-                    );
-                  },
-                  onDelete: () {
-                    noteProvider.deleteNote(index);
-                  },
-                );
-              },
-            ),
-    );
-  }
+                    ),
+                  );
+                },
+                onDelete: () {
+                  noteProvider.deleteNote(index);
+                },
+              );
+            },
+          ),
+  );
+}
 }

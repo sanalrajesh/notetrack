@@ -29,112 +29,100 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   @override
   void initState() {
     super.initState();
-
     _titleController =
         TextEditingController(text: widget.existingNote?.title ?? '');
-
     _descController =
         TextEditingController(text: widget.existingNote?.description ?? '');
-
     _subjectController =
         TextEditingController(text: widget.existingNote?.subject ?? '');
   }
 
+  /// Save note method
   Future<void> _saveNote() async {
-    if (_formKey.currentState!.validate()) {
-      final noteProvider =
-          Provider.of<NoteProvider>(context, listen: false);
+    final noteProvider = Provider.of<NoteProvider>(context, listen: false);
 
-      final note = Note(
-        title: _titleController.text.trim(),
-        description: _descController.text.trim(),
-        subject: _subjectController.text.trim(),
-        createdAt:
-            widget.existingNote?.createdAt ?? DateTime.now(),
-      );
+    // Skip saving completely empty notes
+    if (_titleController.text.trim().isEmpty &&
+        _descController.text.trim().isEmpty &&
+        _subjectController.text.trim().isEmpty) {
+      return;
+    }
 
-      if (isEditing) {
-        await noteProvider.updateNote(widget.index!, note);
-      } else {
-        await noteProvider.addNote(note);
-      }
+    final note = Note(
+      title: _titleController.text.trim(),
+      description: _descController.text.trim(),
+      subject: _subjectController.text.trim(),
+      createdAt: widget.existingNote?.createdAt ?? DateTime.now(),
+    );
 
-      if (mounted) Navigator.pop(context);
+    if (isEditing) {
+      await noteProvider.updateNote(widget.index!, note);
+    } else {
+      await noteProvider.addNote(note);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          isEditing ? 'Edit Note' : 'Add Note',
-          style:
-              GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            onPressed: _saveNote,
-            icon: const Icon(Icons.check, size: 28),
+    return WillPopScope(
+      onWillPop: () async {
+        await _saveNote(); // Auto-save before leaving
+        return true; // Allow back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            isEditing ? 'Edit Note' : 'Add Note',
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _subjectController,
-                decoration: InputDecoration(
-                  labelText: 'Subject',
-                  labelStyle: GoogleFonts.poppins(),
-                  border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(12)),
-                  prefixIcon: const Icon(Icons.subject),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                // Subject Field
+                TextFormField(
+                  controller: _subjectController,
+                  decoration: InputDecoration(
+                    labelText: 'Subject',
+                    labelStyle: GoogleFonts.poppins(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    prefixIcon: const Icon(Icons.subject),
+                  ),
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter subject' : null,
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              TextFormField(
-                controller: _titleController,
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                // Title Field
+                TextFormField(
+                  controller: _titleController,
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Note Title',
+                    hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
+                    border: InputBorder.none,
+                  ),
                 ),
-                decoration: InputDecoration(
-                  hintText: 'Note Title',
-                  hintStyle: GoogleFonts.poppins(
-                      color: Colors.grey[400]),
-                  border: InputBorder.none,
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter title' : null,
-              ),
+                const SizedBox(height: 8),
 
-              const SizedBox(height: 8),
-
-              TextFormField(
-                controller: _descController,
-                maxLines: null,
-                style: GoogleFonts.poppins(fontSize: 16),
-                decoration: InputDecoration(
-                  hintText:
-                      'Start typing your note here...',
-                  hintStyle: GoogleFonts.poppins(
-                      color: Colors.grey[400]),
-                  border: InputBorder.none,
+                // Description Field
+                TextFormField(
+                  controller: _descController,
+                  maxLines: null,
+                  style: GoogleFonts.poppins(fontSize: 16),
+                  decoration: InputDecoration(
+                    hintText: 'Start typing your note here...',
+                    hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
+                    border: InputBorder.none,
+                  ),
                 ),
-                validator: (value) =>
-                    value!.isEmpty
-                        ? 'Enter description'
-                        : null,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
