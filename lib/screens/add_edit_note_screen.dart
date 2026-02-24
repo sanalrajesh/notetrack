@@ -29,7 +29,6 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
 
   static const _bgColor = Color(0xFF0A0E21);
   static const _surfaceColor = Color(0xFF141829);
-  static const _cardColor = Color(0xFF1A1F38);
   static const _accentBlue = Color(0xFF1E88E5);
 
   final List<String> _categories = ['IDEAS', 'WORK', 'PERSONAL'];
