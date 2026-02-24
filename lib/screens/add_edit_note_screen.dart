@@ -27,10 +27,6 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   late TextEditingController _subjectController;
   late String _selectedCategory;
 
-  static const _bgColor = Color(0xFF0A0E21);
-  static const _surfaceColor = Color(0xFF141829);
-  static const _accentBlue = Color(0xFF1E88E5);
-
   final List<String> _categories = ['IDEAS', 'WORK', 'PERSONAL'];
 
   bool get isEditing => widget.existingNote != null;
@@ -50,18 +46,6 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
     _descController.dispose();
     _subjectController.dispose();
     super.dispose();
-  }
-
-  Color _categoryColor(String cat) {
-    switch (cat.toUpperCase()) {
-      case 'WORK':
-        return _accentBlue;
-      case 'PERSONAL':
-        return const Color(0xFFE91E63);
-      case 'IDEAS':
-      default:
-        return const Color(0xFF4CAF50);
-    }
   }
 
   Future<void> _saveNote() async {
@@ -97,18 +81,17 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
         return true;
       },
       child: Scaffold(
-        backgroundColor: _bgColor,
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: _bgColor,
+          backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
             icon: Container(
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: _surfaceColor,
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white.withOpacity(0.06)),
               ),
               child: const Icon(Icons.arrow_back_ios_new, size: 16, color: Colors.white),
             ),
@@ -122,7 +105,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
             style: GoogleFonts.inter(
               fontWeight: FontWeight.w600,
               fontSize: 18,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           actions: [
@@ -134,7 +117,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                   if (context.mounted) Navigator.pop(context);
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: _accentBlue.withOpacity(0.15),
+                  backgroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -143,7 +126,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                 child: Text(
                   'Save',
                   style: GoogleFonts.inter(
-                    color: _accentBlue,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
@@ -164,7 +147,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                   style: GoogleFonts.inter(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey[500],
+                    color: Colors.black54,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -173,18 +156,16 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                   spacing: 10,
                   children: _categories.map((cat) {
                     final isSelected = _selectedCategory == cat;
-                    final color = _categoryColor(cat);
                     return GestureDetector(
                       onTap: () => setState(() => _selectedCategory = cat),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
+                      child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: isSelected ? color.withOpacity(0.2) : _surfaceColor,
+                          color: isSelected ? Colors.black : Colors.white,
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: isSelected ? color : Colors.white.withOpacity(0.06),
-                            width: isSelected ? 1.5 : 1,
+                            color: Colors.black,
+                            width: isSelected ? 2 : 1,
                           ),
                         ),
                         child: Text(
@@ -192,7 +173,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                           style: GoogleFonts.inter(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: isSelected ? color : Colors.grey[500],
+                            color: isSelected ? Colors.white : Colors.black,
                             letterSpacing: 0.5,
                           ),
                         ),
@@ -205,19 +186,18 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                 // Subject field
                 Container(
                   decoration: BoxDecoration(
-                    color: _surfaceColor,
+                    color: const Color(0xFFE8E8E8),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.white.withOpacity(0.06)),
                   ),
                   child: TextFormField(
                     controller: _subjectController,
-                    style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                    style: GoogleFonts.inter(color: Colors.black, fontSize: 14),
                     decoration: InputDecoration(
                       labelText: 'Subject',
-                      labelStyle: GoogleFonts.inter(color: Colors.grey[600], fontSize: 14),
+                      labelStyle: GoogleFonts.inter(color: const Color(0xFF888888), fontSize: 14),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      prefixIcon: Icon(Icons.subject, color: Colors.grey[600], size: 20),
+                      prefixIcon: const Icon(Icons.subject, color: Color(0xFF555555), size: 20),
                     ),
                   ),
                 ),
@@ -229,12 +209,12 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                   style: GoogleFonts.inter(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Note Title',
                     hintStyle: GoogleFonts.inter(
-                      color: Colors.grey[700],
+                      color: const Color(0xFFAAAAAA),
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                     ),
@@ -246,7 +226,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                 // Divider
                 Container(
                   height: 1,
-                  color: Colors.white.withOpacity(0.04),
+                  color: Colors.black12,
                 ),
                 const SizedBox(height: 16),
 
@@ -257,13 +237,13 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
                   minLines: 12,
                   style: GoogleFonts.inter(
                     fontSize: 15,
-                    color: Colors.grey[300],
+                    color: Colors.black,
                     height: 1.7,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Start typing your note here...',
                     hintStyle: GoogleFonts.inter(
-                      color: Colors.grey[700],
+                      color: const Color(0xFFAAAAAA),
                       fontSize: 15,
                     ),
                     border: InputBorder.none,

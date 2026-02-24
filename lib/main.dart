@@ -28,59 +28,57 @@ void main() async {
 class NoteTrackApp extends StatelessWidget {
   const NoteTrackApp({super.key});
 
-  static const Color bgDark = Color(0xFF0A0E21);
-  static const Color surfaceDark = Color(0xFF141829);
-  static const Color cardDark = Color(0xFF1A1F38);
-  static const Color accentBlue = Color(0xFF1E88E5);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'NoteTrack',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: accentBlue,
-        scaffoldBackgroundColor: bgDark,
-        colorScheme: const ColorScheme.dark(
-          primary: accentBlue,
-          secondary: accentBlue,
-          surface: surfaceDark,
+        brightness: Brightness.light,
+        primaryColor: Colors.black,
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: const ColorScheme.light(
+          primary: Colors.black,
+          secondary: Colors.black,
+          surface: Colors.white,
         ),
         textTheme: GoogleFonts.interTextTheme(
-          ThemeData.dark().textTheme,
+          ThemeData.light().textTheme,
+        ).apply(
+          bodyColor: Colors.black,
+          displayColor: Colors.black,
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: bgDark,
+          backgroundColor: Colors.white,
           elevation: 0,
           centerTitle: false,
           titleTextStyle: GoogleFonts.inter(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: Colors.black,
           ),
-          iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: surfaceDark,
+          fillColor: const Color(0xFFE8E8E8),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
             borderSide: BorderSide.none,
           ),
           hintStyle: GoogleFonts.inter(
-            color: Colors.grey[600],
+            color: const Color(0xFF888888),
             fontSize: 14,
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: accentBlue,
+          backgroundColor: Colors.black,
           foregroundColor: Colors.white,
         ),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: surfaceDark,
-          selectedItemColor: accentBlue,
-          unselectedItemColor: Colors.grey[600],
+          backgroundColor: Colors.black,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.grey[500],
           type: BottomNavigationBarType.fixed,
           elevation: 0,
           selectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600),

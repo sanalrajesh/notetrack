@@ -18,11 +18,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String searchQuery = '';
   int _currentNavIndex = 0;
 
-  static const _bgColor = Color(0xFF0A0E21);
-  static const _surfaceColor = Color(0xFF141829);
-  static const _cardColor = Color(0xFF1A1F38);
-  static const _accentBlue = Color(0xFF1E88E5);
-
   final List<Map<String, dynamic>> _categories = [
     {'label': 'All', 'icon': Icons.note_outlined},
     {'label': 'Work', 'icon': Icons.work_outline},
@@ -53,8 +48,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _navigateToAddNote({String? category}) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => AddEditNoteScreen(defaultCategory: category),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => AddEditNoteScreen(defaultCategory: category),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
       ),
     );
   }
@@ -65,7 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final notesToShow = _getDisplayNotes(noteProvider);
 
     return Scaffold(
-      backgroundColor: _bgColor,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: _buildBody(noteProvider, notesToShow),
       ),
@@ -91,24 +88,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildNotesPage(NoteProvider noteProvider, List<Note> notesToShow) {
     return CustomScrollView(
       slivers: [
-        // Welcome header
         SliverToBoxAdapter(child: _buildWelcomeHeader()),
-
-        // Search bar
         SliverToBoxAdapter(child: _buildSearchBar()),
-
-        // Category chips
         SliverToBoxAdapter(child: _buildCategoryChips(noteProvider)),
-
-        // Recent Notes header
         SliverToBoxAdapter(child: _buildSectionHeader('Recent Notes')),
-
-        // Notes grid + create card
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           sliver: _buildNotesGrid(notesToShow, noteProvider),
         ),
-
         const SliverToBoxAdapter(child: SizedBox(height: 80)),
       ],
     );
@@ -126,16 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             height: 50,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              gradient: const LinearGradient(
-                colors: [_accentBlue, Color(0xFF42A5F5)],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: _accentBlue.withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              color: Colors.black,
             ),
             child: const Icon(Icons.person, color: Colors.white, size: 28),
           ),
@@ -150,17 +128,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   style: GoogleFonts.inter(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey[500],
+                    color: Colors.black54,
                     letterSpacing: 1.2,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Julian Sterling',
+                  'User',
                   style: GoogleFonts.inter(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               ],
@@ -171,12 +149,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: _surfaceColor,
+              color: Colors.black,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.white.withOpacity(0.06)),
             ),
             child: IconButton(
-              icon: Icon(Icons.settings_outlined, color: Colors.grey[500], size: 20),
+              icon: const Icon(Icons.settings_outlined, color: Colors.white, size: 20),
               onPressed: () => _showSettingsSheet(),
             ),
           ),
@@ -191,17 +168,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
       child: Container(
         decoration: BoxDecoration(
-          color: _surfaceColor,
+          color: const Color(0xFFE8E8E8),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: Colors.white.withOpacity(0.06)),
         ),
         child: TextField(
           onChanged: (val) => setState(() => searchQuery = val),
-          style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+          style: GoogleFonts.inter(color: Colors.black, fontSize: 14),
           decoration: InputDecoration(
             hintText: 'Search your library...',
-            hintStyle: GoogleFonts.inter(color: Colors.grey[600], fontSize: 14),
-            prefixIcon: Icon(Icons.search, color: Colors.grey[600], size: 20),
+            hintStyle: GoogleFonts.inter(color: const Color(0xFF888888), fontSize: 14),
+            prefixIcon: const Icon(Icons.search, color: Color(0xFF555555), size: 20),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 14),
           ),
@@ -226,31 +202,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
               padding: const EdgeInsets.only(right: 10),
               child: GestureDetector(
                 onTap: () => noteProvider.setCategory(cat['label']),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
+                child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                   decoration: BoxDecoration(
-                    color: isSelected ? _accentBlue : _surfaceColor,
+                    color: isSelected ? Colors.black : Colors.white,
                     borderRadius: BorderRadius.circular(22),
-                    border: isSelected
-                        ? null
-                        : Border.all(color: Colors.white.withOpacity(0.08)),
-                    boxShadow: isSelected
-                        ? [
-                            BoxShadow(
-                              color: _accentBlue.withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : null,
+                    border: Border.all(
+                      color: Colors.black,
+                      width: isSelected ? 2 : 1,
+                    ),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         cat['icon'] as IconData,
                         size: 16,
-                        color: isSelected ? Colors.white : Colors.grey[500],
+                        color: isSelected ? Colors.white : Colors.black,
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -258,7 +225,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         style: GoogleFonts.inter(
                           fontSize: 13,
                           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                          color: isSelected ? Colors.white : Colors.grey[500],
+                          color: isSelected ? Colors.white : Colors.black,
                         ),
                       ),
                     ],
@@ -284,7 +251,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             style: GoogleFonts.inter(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           Text(
@@ -292,7 +259,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             style: GoogleFonts.inter(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: _accentBlue,
+              color: Colors.black54,
             ),
           ),
         ],
@@ -302,7 +269,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ─── NOTES GRID ──────────────────────────────────────────────
   Widget _buildNotesGrid(List<Note> notes, NoteProvider noteProvider) {
-    final itemCount = notes.length + 1; // +1 for "Create Note" card
+    final itemCount = notes.length + 1;
     return SliverGrid(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -314,25 +281,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
         (context, index) {
           if (index < notes.length) {
             final note = notes[index];
-            // Find correct index in the full list for operations
             final actualIndex = noteProvider.notes.indexOf(note);
             return NoteCard(
               note: note,
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => AddEditNoteScreen(
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => AddEditNoteScreen(
                       index: actualIndex,
                       existingNote: note,
                     ),
+                    transitionDuration: Duration.zero,
+                    reverseTransitionDuration: Duration.zero,
                   ),
                 );
               },
               onDelete: () => noteProvider.deleteNote(actualIndex),
             );
           } else {
-            // Create note card
             return _buildCreateNoteCard();
           }
         },
@@ -347,7 +314,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       onTap: () => _navigateToAddNote(),
       child: CustomPaint(
         painter: _DashedBorderPainter(
-          color: Colors.grey[700]!.withOpacity(0.4),
+          color: Colors.black38,
           borderRadius: 18,
         ),
         child: Container(
@@ -361,11 +328,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: _surfaceColor,
+                  color: Colors.black,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: Colors.white.withOpacity(0.06)),
                 ),
-                child: Icon(Icons.add, color: Colors.grey[500], size: 24),
+                child: const Icon(Icons.add, color: Colors.white, size: 24),
               ),
               const SizedBox(height: 12),
               Text(
@@ -373,7 +339,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey[500],
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -389,17 +355,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       width: 56,
       height: 56,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [_accentBlue, Color(0xFF42A5F5)],
-        ),
+        color: Colors.black,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: _accentBlue.withOpacity(0.4),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
       ),
       child: FloatingActionButton(
         backgroundColor: Colors.transparent,
@@ -410,47 +367,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ─── BOTTOM NAV ──────────────────────────────────────────────
+  // ─── BOTTOM NAV (no animation) ─────────────────────────────
   Widget _buildBottomNav() {
+    const items = [
+      {'icon': Icons.sticky_note_2_outlined, 'activeIcon': Icons.sticky_note_2, 'label': 'NOTES'},
+      {'icon': Icons.search, 'activeIcon': Icons.search, 'label': 'SEARCH'},
+      {'icon': Icons.star_outline, 'activeIcon': Icons.star, 'label': 'STARRED'},
+      {'icon': Icons.person_outline, 'activeIcon': Icons.person, 'label': 'ACCOUNT'},
+    ];
+
     return Container(
-      decoration: BoxDecoration(
-        color: _surfaceColor,
-        border: Border(
-          top: BorderSide(color: Colors.white.withOpacity(0.04)),
+      color: Colors.black,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 56,
+          child: Row(
+            children: List.generate(items.length, (index) {
+              final item = items[index];
+              final isSelected = _currentNavIndex == index;
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => setState(() => _currentNavIndex = index),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        isSelected ? item['activeIcon'] as IconData : item['icon'] as IconData,
+                        color: isSelected ? Colors.white : Colors.grey[500],
+                        size: 24,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        item['label'] as String,
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                          color: isSelected ? Colors.white : Colors.grey[500],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
         ),
-      ),
-      child: BottomNavigationBar(
-        currentIndex: _currentNavIndex,
-        onTap: (index) => setState(() => _currentNavIndex = index),
-        backgroundColor: _surfaceColor,
-        selectedItemColor: _accentBlue,
-        unselectedItemColor: Colors.grey[600],
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
-        selectedLabelStyle: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: GoogleFonts.inter(fontSize: 11),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sticky_note_2_outlined),
-            activeIcon: Icon(Icons.sticky_note_2),
-            label: 'NOTES',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            activeIcon: Icon(Icons.search),
-            label: 'SEARCH',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.star_outline),
-            activeIcon: Icon(Icons.star),
-            label: 'STARRED',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'ACCOUNT',
-          ),
-        ],
       ),
     );
   }
@@ -463,7 +426,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text('Search', style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.white)),
+          Text('Search', style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.black)),
           const SizedBox(height: 16),
           _buildSearchBar(),
           const SizedBox(height: 16),
@@ -473,9 +436,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.search, size: 64, color: Colors.grey[700]),
+                    Icon(Icons.search, size: 64, color: Colors.grey[400]),
                     const SizedBox(height: 16),
-                    Text('Search your notes', style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[600])),
+                    Text('Search your notes', style: GoogleFonts.inter(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -498,7 +461,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     if (searchResults.isEmpty) {
       return Center(
-        child: Text('No results found', style: GoogleFonts.inter(color: Colors.grey[600])),
+        child: Text('No results found', style: GoogleFonts.inter(color: Colors.black54)),
       );
     }
 
@@ -521,7 +484,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text('Starred', style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.white)),
+          Text('Starred', style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.black)),
           const SizedBox(height: 16),
           if (starred.isEmpty)
             Expanded(
@@ -529,9 +492,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.star_outline, size: 64, color: Colors.grey[700]),
+                    Icon(Icons.star_outline, size: 64, color: Colors.grey[400]),
                     const SizedBox(height: 16),
-                    Text('No starred notes', style: GoogleFonts.inter(fontSize: 16, color: Colors.grey[600])),
+                    Text('No starred notes', style: GoogleFonts.inter(fontSize: 16, color: Colors.black54)),
                   ],
                 ),
               ),
@@ -560,15 +523,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 20),
-          Text('Account', style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.white)),
+          Text('Account', style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.black)),
           const SizedBox(height: 32),
           // Profile card
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: _cardColor,
+              color: Colors.black,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: Colors.white.withOpacity(0.06)),
             ),
             child: Row(
               children: [
@@ -576,19 +538,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: [_accentBlue, Color(0xFF42A5F5)]),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Icon(Icons.person, color: Colors.white, size: 30),
+                  child: const Icon(Icons.person, color: Colors.black, size: 30),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Julian Sterling', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white)),
+                      Text('User', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white)),
                       const SizedBox(height: 4),
-                      Text('julian@notetrack.app', style: GoogleFonts.inter(fontSize: 13, color: Colors.grey[500])),
+                      Text('user@notetrack.app', style: GoogleFonts.inter(fontSize: 13, color: Colors.grey[400])),
                     ],
                   ),
                 ),
@@ -604,7 +566,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _buildAccountOption(Icons.logout, 'Log Out', isDestructive: true, onTap: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
+                transitionDuration: Duration.zero,
+                reverseTransitionDuration: Duration.zero,
+              ),
             );
           }),
         ],
@@ -616,7 +582,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: ListTile(
-        leading: Icon(icon, color: isDestructive ? const Color(0xFFEF5350) : Colors.grey[500]),
+        leading: Icon(icon, color: isDestructive ? const Color(0xFFEF5350) : Colors.white),
         title: Text(
           label,
           style: GoogleFonts.inter(
@@ -625,9 +591,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        trailing: Icon(Icons.chevron_right, color: Colors.grey[700], size: 20),
+        trailing: const Icon(Icons.chevron_right, color: Colors.white, size: 20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        tileColor: _cardColor,
+        tileColor: Colors.black,
         onTap: onTap,
       ),
     );
@@ -639,9 +605,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: _cardColor,
+        color: Colors.black,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -655,13 +620,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             note.description,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[500]),
+            style: GoogleFonts.inter(fontSize: 12, color: Colors.grey[400]),
           ),
         ),
         trailing: IconButton(
           icon: Icon(
             note.isStarred ? Icons.star : Icons.star_outline,
-            color: note.isStarred ? Colors.amber : Colors.grey[600],
+            color: note.isStarred ? Colors.white : Colors.grey[500],
             size: 22,
           ),
           onPressed: () => noteProvider.toggleStar(actualIndex),
@@ -669,11 +634,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => AddEditNoteScreen(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => AddEditNoteScreen(
                 index: actualIndex,
                 existingNote: note,
               ),
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
             ),
           );
         },
@@ -681,51 +648,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+
   // ─── SETTINGS SHEET ──────────────────────────────────────────
   void _showSettingsSheet() {
-    showModalBottomSheet(
+    showGeneralDialog(
       context: context,
-      backgroundColor: _cardColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 8),
-              Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[700],
-                  borderRadius: BorderRadius.circular(2),
-                ),
+      barrierDismissible: true,
+      barrierLabel: 'Settings',
+      barrierColor: Colors.black54,
+      transitionDuration: Duration.zero,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Material(
+            color: Colors.black,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[600],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ListTile(
+                    leading: const Icon(Icons.person_outline, color: Colors.white),
+                    title: Text('Profile', style: GoogleFonts.inter(color: Colors.white)),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.info_outline, color: Colors.white),
+                    title: Text('About', style: GoogleFonts.inter(color: Colors.white)),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.logout, color: Color(0xFFEF5350)),
+                    title: Text('Logout', style: GoogleFonts.inter(color: const Color(0xFFEF5350))),
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                ],
               ),
-              const SizedBox(height: 20),
-              ListTile(
-                leading: const Icon(Icons.person_outline, color: Colors.white70),
-                title: Text('Profile', style: GoogleFonts.inter(color: Colors.white)),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.info_outline, color: Colors.white70),
-                title: Text('About', style: GoogleFonts.inter(color: Colors.white)),
-                onTap: () => Navigator.pop(context),
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout, color: Color(0xFFEF5350)),
-                title: Text('Logout', style: GoogleFonts.inter(color: const Color(0xFFEF5350))),
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-            ],
+            ),
           ),
         );
       },
@@ -755,7 +734,6 @@ class _DashedBorderPainter extends CustomPainter {
         ),
       );
 
-    // Create dash effect
     const dashWidth = 8.0;
     const dashSpace = 5.0;
     double distance = 0;

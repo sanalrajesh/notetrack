@@ -16,18 +16,6 @@ class NoteCard extends StatelessWidget {
     this.isDarkMode = true,
   });
 
-  Color _categoryColor() {
-    switch (note.category.toUpperCase()) {
-      case 'WORK':
-        return const Color(0xFF1E88E5);
-      case 'PERSONAL':
-        return const Color(0xFFE91E63);
-      case 'IDEAS':
-      default:
-        return const Color(0xFF4CAF50);
-    }
-  }
-
   String _relativeTime() {
     final now = DateTime.now();
     final diff = now.difference(note.createdAt);
@@ -43,19 +31,13 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const cardBg = Color(0xFF1A1F38);
-    final catColor = _categoryColor();
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: cardBg,
+          color: Colors.black,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.06),
-          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +49,7 @@ class NoteCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: catColor.withOpacity(0.15),
+                    color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(
@@ -75,7 +57,7 @@ class NoteCard extends StatelessWidget {
                     style: GoogleFonts.inter(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: catColor,
+                      color: Colors.white,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -83,10 +65,10 @@ class NoteCard extends StatelessWidget {
                 PopupMenuButton<String>(
                   icon: Icon(
                     Icons.more_horiz,
-                    color: Colors.grey[600],
+                    color: Colors.grey[400],
                     size: 20,
                   ),
-                  color: const Color(0xFF232847),
+                  color: const Color(0xFF1A1A1A),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -98,7 +80,7 @@ class NoteCard extends StatelessWidget {
                         children: [
                           Icon(Icons.edit_outlined, size: 16, color: Colors.grey[400]),
                           const SizedBox(width: 8),
-                          Text('Edit', style: GoogleFonts.inter(color: Colors.grey[300], fontSize: 13)),
+                          Text('Edit', style: GoogleFonts.inter(color: Colors.white, fontSize: 13)),
                         ],
                       ),
                     ),
@@ -145,7 +127,7 @@ class NoteCard extends StatelessWidget {
                 note.description,
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  color: Colors.grey[500],
+                  color: Colors.grey[400],
                   height: 1.5,
                 ),
                 maxLines: 3,
@@ -158,7 +140,7 @@ class NoteCard extends StatelessWidget {
               _relativeTime(),
               style: GoogleFonts.inter(
                 fontSize: 11,
-                color: Colors.grey[600],
+                color: Colors.grey[500],
               ),
             ),
           ],
