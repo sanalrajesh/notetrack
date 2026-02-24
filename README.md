@@ -68,9 +68,10 @@ Follow these steps to run **NoteTrack** locally:
    ```bash
    flutter run
 
-📦 APK Download
-You can manually install and test the app by downloading the ready-to-use APK from the Releases section.
-👉 Download NoteTrack APK
+📦 **APK Download**  
+You can manually install and test the app by downloading the ready-to-use APK from the [Releases](https://github.com/sanalrajesh/notetrack/releases) section.  
+
+👉 [Download NoteTrack APK (v1.0.0)](https://github.com/sanalrajesh/notetrack/releases/download/v1.0.0/app-arm64-v8a-release.apk)
 
 
 🌟 Future Enhancements
