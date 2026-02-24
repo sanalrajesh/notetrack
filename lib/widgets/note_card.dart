@@ -1,97 +1,168 @@
 import 'package:flutter/material.dart';
 import '../models/note_model.dart';
-import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class NoteCard extends StatelessWidget {
   final Note note;
   final VoidCallback onTap;
   final VoidCallback onDelete;
-  final bool isDarkMode; // new
+  final bool isDarkMode;
 
   const NoteCard({
     super.key,
     required this.note,
     required this.onTap,
     required this.onDelete,
-    this.isDarkMode = false,
+    this.isDarkMode = true,
   });
+
+  Color _categoryColor() {
+    switch (note.category.toUpperCase()) {
+      case 'WORK':
+        return const Color(0xFF1E88E5);
+      case 'PERSONAL':
+        return const Color(0xFFE91E63);
+      case 'IDEAS':
+      default:
+        return const Color(0xFF4CAF50);
+    }
+  }
+
+  String _relativeTime() {
+    final now = DateTime.now();
+    final diff = now.difference(note.createdAt);
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
+    if (diff.inHours < 24) return '${diff.inHours} hours ago';
+    if (diff.inDays == 1) return 'Yesterday';
+    if (diff.inDays < 7) return '${diff.inDays} days ago';
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return '${months[note.createdAt.month - 1]} ${note.createdAt.day}';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isDarkMode ? const Color.fromARGB(255, 15, 15, 15) : Colors.white;
-    final borderColor = isDarkMode ? Colors.grey[700] : Colors.grey[300];
-    final titleColor = isDarkMode ? const Color.fromARGB(255, 247, 249, 248) : Colors.black;
-    final subjectColor = isDarkMode ? Colors.white : Colors.black;
-    final descriptionColor = isDarkMode ? Colors.grey[400] : Colors.grey[700];
-    final dateColor = isDarkMode ? Colors.grey[500] : Colors.grey[600];
+    const cardBg = Color(0xFF1A1F38);
+    final catColor = _categoryColor();
 
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: 165,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: borderColor!, width: 1),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: cardBg,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.06),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Top row: category badge + menu
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: InkWell(
-                    onTap: onDelete,
-                    borderRadius: BorderRadius.circular(12),
-                    splashColor: Colors.red.withOpacity(0.2),
-                    child: Icon(Icons.delete, size: 20, color: dateColor),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: catColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(6),
                   ),
-                ),
-                Text(
-                  note.title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: titleColor,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Expanded(
                   child: Text(
-                    note.description,
-                    maxLines: 4,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 12, color: descriptionColor),
+                    note.category.toUpperCase(),
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: catColor,
+                      letterSpacing: 0.5,
+                    ),
                   ),
+                ),
+                PopupMenuButton<String>(
+                  icon: Icon(
+                    Icons.more_horiz,
+                    color: Colors.grey[600],
+                    size: 20,
+                  ),
+                  color: const Color(0xFF232847),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit_outlined, size: 16, color: Colors.grey[400]),
+                          const SizedBox(width: 8),
+                          Text('Edit', style: GoogleFonts.inter(color: Colors.grey[300], fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete_outline, size: 16, color: Color(0xFFEF5350)),
+                          const SizedBox(width: 8),
+                          Text('Delete', style: GoogleFonts.inter(color: const Color(0xFFEF5350), fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      onTap();
+                    } else if (value == 'delete') {
+                      onDelete();
+                    }
+                  },
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 6),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                note.subject,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: subjectColor,
+            const SizedBox(height: 12),
+
+            // Title
+            Text(
+              note.title.isEmpty ? 'Untitled' : note.title,
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                height: 1.3,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 8),
+
+            // Description
+            Expanded(
+              child: Text(
+                note.description,
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                  height: 1.5,
                 ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 2),
-              Text(
-                DateFormat('dd MMM yyyy, hh:mm a').format(note.createdAt),
-                style: TextStyle(fontSize: 11, color: dateColor),
+            ),
+
+            // Time
+            Text(
+              _relativeTime(),
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: Colors.grey[600],
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

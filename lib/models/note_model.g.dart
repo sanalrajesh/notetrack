@@ -13,21 +13,26 @@ class NoteAdapter extends TypeAdapter<Note> {
   @override
   Note read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
-    };
+    final fields = <int, dynamic>{};
+    for (int i = 0; i < numOfFields; i++) {
+      final key = reader.readByte();
+      final value = reader.read();
+      fields[key] = value;
+    }
     return Note(
       title: fields[0] as String,
       description: fields[1] as String,
       subject: fields[2] as String,
       createdAt: fields[3] as DateTime?,
+      category: fields[4] as String? ?? 'IDEAS',
+      isStarred: fields[5] as bool? ?? false,
     );
   }
 
   @override
   void write(BinaryWriter writer, Note obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -35,7 +40,11 @@ class NoteAdapter extends TypeAdapter<Note> {
       ..writeByte(2)
       ..write(obj.subject)
       ..writeByte(3)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(4)
+      ..write(obj.category)
+      ..writeByte(5)
+      ..write(obj.isStarred);
   }
 
   @override

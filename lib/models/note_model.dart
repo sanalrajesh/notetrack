@@ -17,10 +17,18 @@ class Note extends HiveObject {
   @HiveField(3)
   DateTime createdAt;
 
+  @HiveField(4)
+  String category;
+
+  @HiveField(5)
+  bool isStarred;
+
   Note({
     required this.title,
     required this.description,
     required this.subject,
     DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now(); 
+    this.category = 'IDEAS',
+    this.isStarred = false,
+  }) : createdAt = createdAt ?? DateTime.now();
 }
