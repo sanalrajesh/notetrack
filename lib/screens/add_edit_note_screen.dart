@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/note_model.dart';
 import '../providers/note_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddEditNoteScreen extends StatefulWidget {
-  final int? index;
   final Note? existingNote;
+  final int? index;
 
-  const AddEditNoteScreen({super.key, this.index, this.existingNote});
+  const AddEditNoteScreen({
+    super.key,
+    this.existingNote,
+    this.index,
+  });
 
   @override
   State<AddEditNoteScreen> createState() => _AddEditNoteScreenState();
@@ -15,9 +20,8 @@ class AddEditNoteScreen extends StatefulWidget {
 
 class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   final _formKey = GlobalKey<FormState>();
-
   late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
+  late TextEditingController _descController;
   late TextEditingController _subjectController;
 
   bool get isEditing => widget.existingNote != null;
@@ -28,22 +32,25 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
 
     _titleController =
         TextEditingController(text: widget.existingNote?.title ?? '');
-    _descriptionController =
+
+    _descController =
         TextEditingController(text: widget.existingNote?.description ?? '');
+
     _subjectController =
         TextEditingController(text: widget.existingNote?.subject ?? '');
   }
 
-  void _saveNote() async {
+  Future<void> _saveNote() async {
     if (_formKey.currentState!.validate()) {
       final noteProvider =
           Provider.of<NoteProvider>(context, listen: false);
 
       final note = Note(
         title: _titleController.text.trim(),
-        description: _descriptionController.text.trim(),
+        description: _descController.text.trim(),
         subject: _subjectController.text.trim(),
-        createdAt: DateTime.now(),
+        createdAt:
+            widget.existingNote?.createdAt ?? DateTime.now(),
       );
 
       if (isEditing) {
@@ -52,7 +59,7 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
         await noteProvider.addNote(note);
       }
 
-      Navigator.pop(context);
+      if (mounted) Navigator.pop(context);
     }
   }
 
@@ -60,51 +67,72 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? "Edit Note" : "Add Note"),
+        title: Text(
+          isEditing ? 'Edit Note' : 'Add Note',
+          style:
+              GoogleFonts.poppins(fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          IconButton(
+            onPressed: _saveNote,
+            icon: const Icon(Icons.check, size: 28),
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: [
               TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: "Title",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? "Enter title" : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
                 controller: _subjectController,
-                decoration: const InputDecoration(
-                  labelText: "Subject",
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: 'Subject',
+                  labelStyle: GoogleFonts.poppins(),
+                  border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(12)),
+                  prefixIcon: const Icon(Icons.subject),
                 ),
                 validator: (value) =>
-                    value!.isEmpty ? "Enter subject" : null,
+                    value!.isEmpty ? 'Enter subject' : null,
               ),
               const SizedBox(height: 16),
+
               TextFormField(
-                controller: _descriptionController,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: "Description",
-                  border: OutlineInputBorder(),
+                controller: _titleController,
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Note Title',
+                  hintStyle: GoogleFonts.poppins(
+                      color: Colors.grey[400]),
+                  border: InputBorder.none,
                 ),
                 validator: (value) =>
-                    value!.isEmpty ? "Enter description" : null,
+                    value!.isEmpty ? 'Enter title' : null,
               ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _saveNote,
-                  child: Text(isEditing ? "Update Note" : "Save Note"),
+
+              const SizedBox(height: 8),
+
+              TextFormField(
+                controller: _descController,
+                maxLines: null,
+                style: GoogleFonts.poppins(fontSize: 16),
+                decoration: InputDecoration(
+                  hintText:
+                      'Start typing your note here...',
+                  hintStyle: GoogleFonts.poppins(
+                      color: Colors.grey[400]),
+                  border: InputBorder.none,
                 ),
+                validator: (value) =>
+                    value!.isEmpty
+                        ? 'Enter description'
+                        : null,
               ),
             ],
           ),

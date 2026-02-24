@@ -41,61 +41,44 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: const Icon(Icons.add),
       ),
 
-      body: noteProvider.notes.isEmpty
-          ? const Center(
-              child: Text(
-                "No Notes Yet",
-                style: TextStyle(fontSize: 16),
-              ),
-            )
-          : ListView.builder(
-              itemCount: noteProvider.notes.length,
-              itemBuilder: (context, index) {
-                final note = noteProvider.notes[index];
+body: noteProvider.notes.isEmpty
+    ? const Center(
+        child: Text(
+          "No Notes Yet",
+          style: TextStyle(fontSize: 16),
+        ),
+      )
+    : GridView.builder(
+        padding: const EdgeInsets.all(12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // 🔥 2 per row
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.85, // controls height
+        ),
+        itemCount: noteProvider.notes.length,
+        itemBuilder: (context, index) {
+          final note = noteProvider.notes[index];
 
-                return NoteCard(
-                  note: note,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddEditNoteScreen(
-                          index: index,
-                          existingNote: note,
-                        ),
-                      ),
-                    );
-                  },
-                  onDelete: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text("Delete Note"),
-                        content: const Text(
-                          "Are you sure you want to delete this note?",
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text("Cancel"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              noteProvider.deleteNote(index);
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              "Delete",
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+          return NoteCard(
+            note: note,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddEditNoteScreen(
+                    index: index,
+                    existingNote: note,
+                  ),
+                ),
+              );
+            },
+            onDelete: () {
+              noteProvider.deleteNote(index);
+            },
+          );
+        },
+      ),
     );
   }
 }
